@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - DVWA</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <!-- Tailwind CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f2f4f8;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background: #111827;
+            color: #f3f4f6;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+        .sidebar h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #10b981;
+        }
+        .sidebar a {
+            color: #d1d5db;
+            text-decoration: none;
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .sidebar a:hover {
+            background: #1f2937;
+            color: #10b981;
+        }
+        .sidebar-toggle {
+            display: none;
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #10b981;
+            z-index: 1001;
+            cursor: pointer;
+        }
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            margin-left: 250px;
+            transition: margin 0.3s ease;
+        }
+        .form-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            max-width: 32rem;
+            width: 100%;
+            margin: 0 auto;
+        }
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
+        }
+        .btn-primary {
+            background-color: #10b981;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            background-color: #059669;
+            transform: translateY(-2px);
+        }
+        .btn-primary:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+        .btn-secondary {
+            background-color: #6b7280;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-secondary:hover {
+            background-color: #4b5563;
+            transform: translateY(-2px);
+        }
+        footer {
+            background: #111827;
+            color: #f3f4f6;
+            padding: 2rem;
+            text-align: center;
+        }
+        .footer-link {
+            color: #d1d5db;
+            text-decoration: none;
+            margin: 0 0.5rem;
+            transition: color 0.3s;
+        }
+        .footer-link:hover {
+            color: #10b981;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .sidebar-toggle {
+                display: block;
+            }
+            .main-content {
+                margin-left: 0;
+                padding-top: 4rem;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            if (form) {
+                form.addEventListener('submit', function(event) {
+                    const submitButton = form.querySelector('button[type="submit"]');
+                    if (submitButton) {
+                        submitButton.disabled = true;
+                        submitButton.textContent = 'Submitting...';
+                    }
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('active')">☰</button>
+    <div class="layout">
+        <aside class="sidebar">
+            <h1>DVWA</h1>
+            <a href="/">Home</a>
+            <a href="/login">Log in</a>
+            <a href="/register">Register</a>
+            <a href="/about">about</a>
+        </aside>
+        <main class="main-content">
+            <section class="py-8">
+                <div class="container mx-auto px-4 flex justify-center items-center">
+                    <div class="form-card">
+                        <h1 class="text-3xl font-bold text-gray-900 text-center mb-4">Contact Us</h1>
+                        <p class="text-gray-600 text-center mb-8">If there's something we can help you with, let us know. We'll be more than happy to offer you our help.</p>
+                        <form action="/contact" method="POST">
+                            <div class="mb-4">
+                                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name:</label>
+                                <input class="form-control" type="text" id="name" name="name" placeholder="John Doe" required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email:</label>
+                                <input class="form-control" id="email" name="email" placeholder="e.g. john@doe.com" required type="email" value="">
+                            </div>
+                            <div class="mb-4">
+                                <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Subject:</label>
+                                <input class="form-control" id="subject" name="subject" placeholder="Subject" required type="text" value="">
+                            </div>
+                            <div class="mb-6">
+                                <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message:</label>
+                                <textarea class="form-control" id="message" name="message" placeholder="Tell us a few words..." required rows="5" title="Type your Message"></textarea>
+                            </div>
+                            <div class="flex justify-center space-x-4">
+                                <button type="reset" class="btn-secondary">Reset</button>
+                                <button class="btn-primary" type="submit">Contact Us</button>
+                            </div>
+                            <p class="text-center mt-6 text-gray-600">
+                                <a href="/" class="underline hover:text-emerald-500">Home</a> | 
+                                <a href="/profile" class="underline hover:text-emerald-500">Profile</a>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
