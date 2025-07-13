@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Posts from Following</title>
+    <!-- Add your CSS stylesheets and JavaScript files here, if needed -->
+    <style>
+            .profile-picture {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%; /* Set border-radius to 50% for circular shape */
+            margin-right: 15px;
+        }
+</style>
+</head>
+
+<body>
+    <h1>Posts from Users You Are Following</h1>
+    <a href="{{ url_for('public_profile', user_id=user_id) }}">Back to Public Profile</a>
+
+    {% if posts %}
+ <ul>
+            {% for post in posts %}
+                <li>
+                    <img class="profile-picture" src="{{ url_for('uploaded_file', filename=post.profile_picture) }}" alt="Profile Picture">
+
+                    <strong>Post ID: {{ post.id }}</strong><br>
+                    <strong>Title:</strong> {{ post.title }}<br>
+                    <strong>Content:</strong> {{ post.content }}<br>
+                    <img src="{{ post.profile_picture }}" alt="Profile Picture"><br>
+                    <!-- Add more post details if needed -->
+                </li>
+                <hr>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No posts from users you are following.</p>
+    {% endif %}
+
+    <!-- Add your pagination logic here if you have multiple pages of posts -->
+<!-- Pagination -->
+<div class="pagination">
+    {% if page > 1 %}
+        <a href="{{ url_for('following_posts', user_id=user_id, page=page-1) }}">Previous</a>
+    {% endif %}
+
+{% if posts|length >= per_page %}
+        <a href="{{ url_for('following_posts', user_id=user_id, page=page+1) }}">Next</a>
+    {% endif %}
+</div>
+    <!-- Add your footer and other elements as needed -->
+
+    <!-- Add your JavaScript files here, if needed -->
+</body>
+
+</html>

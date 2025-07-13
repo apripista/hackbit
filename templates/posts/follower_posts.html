@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Follower's Posts - InspiraHub</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='static/CSS/flash-styles.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f2f4f8;
+        }
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background: #111827;
+            color: #f3f4f6;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        .sidebar h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #10b981;
+        }
+        .sidebar a {
+            color: #d1d5db;
+            text-decoration: none;
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+            transition: 0.3s;
+        }
+        .sidebar a:hover {
+            background: #1f2937;
+            color: #10b981;
+        }
+        .sidebar form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .sidebar input,
+        .sidebar select,
+        .sidebar button {
+            padding: 0.4rem;
+            border-radius: 5px;
+            border: none;
+        }
+        .sidebar button {
+            background-color: #10b981;
+            color: white;
+            cursor: pointer;
+        }
+        .sidebar-toggle {
+            display: none;
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #10b981;
+            z-index: 1001;
+        }
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            margin-left: 250px;
+            transition: margin 0.3s ease;
+        }
+        .container {
+            background-color: rgba(138, 138, 138, 0.8);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 3rem auto;
+        }
+        .container h1 {
+            margin-bottom: 20px;
+            color: #111827;
+            text-align: center;
+        }
+        .links {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .links a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #1900ff;
+        }
+        .links a:hover {
+            text-decoration: underline solid rgb(149, 17, 2) 3px;
+        }
+        .flash-message {
+            background-color: #ffcccc;
+            color: #333;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background-color: #fff;
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+        }
+        .profile-picture {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+        li strong {
+            color: #10b981;
+        }
+        .no-posts {
+            text-align: center;
+            margin-top: 50px;
+            color: #111827;
+        }
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .pagination a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #1900ff;
+        }
+        .pagination a:hover {
+            text-decoration: underline solid rgb(149, 17, 2) 3px;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .sidebar-toggle {
+                display: block;
+            }
+            .main-content {
+                margin-left: 0;
+                padding-top: 5rem;
+            }
+            .container {
+                margin: 1rem auto;
+                padding: 20px;
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('active')">☰</button>
+    <div class="layout">
+        <aside class="sidebar">
+            <h1>InspiraHub</h1>
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('view_posts') }}">Posts</a>
+            <a href="{{ url_for('create_post') }}">New Post</a>
+            <a href="{{ url_for('settings') }}">Settings</a>
+            <a href="{{ url_for('upload_profile_image') }}">Upload Image</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </aside>
+        <main class="main-content">
+            <div class="container">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="flash-message {{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                <h1>Follower's Posts</h1>
+                <div class="links">
+                    <a href="{{ url_for('public_profile', user_id=user_id) }}">Back to Public Profile</a>
+                </div>
+                {% if posts %}
+                    <ul>
+                        {% for post in posts %}
+                            <li>
+                                <img class="profile-picture" src="{{ url_for('uploaded_file', filename=post.profile_picture) }}" alt="Profile Picture">
+                                <strong>Title:</strong> {{ post.title }},
+                                <strong>Content:</strong> {{ post.content }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <div class="no-posts">
+                        <p>No posts available.</p>
+                    </div>
+                {% endif %}
+                <div class="pagination">
+                    {% if page > 1 %}
+                        <a href="{{ url_for('follower_posts', user_id=user_id, page=page-1) }}">Previous</a>
+                    {% endif %}
+                    {% if posts|length >= per_page %}
+                        <a href="{{ url_for('follower_posts', user_id=user_id, page=page+1) }}">Next</a>
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="{{ url_for('static', filename='static/JS/flash-disappear.js') }}"></script>
+</body>
+</html>

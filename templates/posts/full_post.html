@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+
+  <title>{{ title|striptags }} - InspiraHub</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f2f5;
+      color: #333;
+    }
+
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 240px;
+      background: #111827;
+      color: #f3f4f6;
+      padding: 2rem 1rem;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      overflow-y: auto;
+      z-index: 1000;
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar h1 {
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      color: #10b981;
+    }
+
+    .sidebar a {
+      display: block;
+      color: #d1d5db;
+      text-decoration: none;
+      padding: 0.8rem 1rem;
+      margin-bottom: 0.5rem;
+      border-radius: 10px;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover {
+      background: #1f2937;
+      color: #10b981;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      padding: 2rem 1rem;
+      margin-left: 240px;
+      transition: margin-left 0.3s ease;
+      gap: 2rem;
+    }
+
+    .post-container {
+      flex: 2;
+      max-width: 800px;
+      background: white;
+      padding: 1.2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .comments-thread {
+      flex: 1;
+      max-height: calc(100vh - 4rem);
+      overflow-y: auto;
+      background: #ffffff;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .post-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.2rem;
+      gap: 1rem;
+    }
+
+    .post-header img {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #10b981;
+    }
+
+    .post-meta {
+      flex-grow: 1;
+    }
+
+    .post-meta small {
+      color: #888;
+    }
+
+    .post-title {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #111827;
+      margin-bottom: 1rem;
+    }
+
+    .post-body pre {
+      background: #f9f9f9;
+      padding: 1rem;
+      border-radius: 5px;
+      white-space: pre-wrap;
+      margin-bottom: 1rem;
+    }
+
+    .comment {
+      padding: 0.8rem;
+      background: #f1f1f1;
+      border-radius: 5px;
+      margin-bottom: 0.8rem;
+    }
+
+    form label {
+      display: block;
+      margin-top: 1rem;
+    }
+
+    form input[type="email"],
+    form textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.3rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    form button {
+      margin-top: 1rem;
+      padding: 0.7rem 1.5rem;
+      background-color: #10b981;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    form button:hover {
+      background-color: #0e9b72;
+    }
+
+    .sidebar-toggle {
+      display: none;
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      font-size: 1.5rem;
+      color: #10b981;
+      background: none;
+      border: none;
+      z-index: 1001;
+    }
+
+
+
+
+    /* Three-dot menu button */
+    .menu-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    position: relative;
+    color: #10b981;
+    }
+
+    /* Dropdown container */
+    .menu-dropdown {
+    position: absolute;
+    top: 2rem;
+    right: 0;
+    background: white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    border-radius: 8px;
+    display: none;
+    flex-direction: column;
+    min-width: 140px;
+    z-index: 10000;
+    }
+
+    /* Show dropdown */
+    .menu-dropdown.show {
+    display: flex;
+    }
+
+    /* Menu options */
+    .menu-dropdown button, .menu-dropdown form button {
+    background: none;
+    border: none;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    width: 100%;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #111827;
+    border-radius: 0;
+    transition: background-color 0.2s ease;
+    }
+
+    .menu-dropdown button:hover, .menu-dropdown form button:hover {
+    background-color: #f0fdf4;
+    color: #10b981;
+    }
+
+    /* Wrap the menu in a container for positioning */
+    .menu-container {
+    position: relative;
+    display: inline-block;
+    }
+
+
+
+
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.active {
+        transform: translateX(0);
+      }
+
+      .sidebar-toggle {
+        display: block;
+      }
+
+      .main-content {
+        flex-direction: column;
+        margin-left: 0;
+        padding: 1rem;
+        padding-top: 4rem;
+      }
+
+      .post-container,
+      .comments-thread {
+        margin-left: 0;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('active')">☰</button>
+  <div class="layout">
+    <aside class="sidebar">
+      <h1>InspiraHub</h1>
+      <a href="/">Home</a>
+      <a href="/view_posts">Posts</a>
+      <a href="/create_post">New Post</a>
+      <a href="/settings">Settings</a>
+      <a href="/upload_profile_image">Upload Image</a>
+      <a href="/logout">Logout</a>
+    </aside>
+
+    <main class="main-content">
+      <div class="post-container">
+        <div class="post-header">
+          <img src="{{ url_for('uploaded_file', filename=profile_picture) }}" alt="Profile Image">
+
+
+
+          
+          <div class="post-meta">
+            <p><strong>{{ username }}</strong> - {{ total_followers }} Followers</p>
+            <small>
+              {% if is_edited %}
+                Edited: {{ edited_at.strftime('%Y-%m-%d %H:%M:%S %A') }}<br>
+              {% endif %}
+              Posted: {{ created_at.strftime('%Y-%m-%d %H:%M:%S %A') }}
+            </small>
+          </div>
+          {% if user_id %}
+            <div class="menu-container">
+                <button class="menu-btn" aria-label="Post options" onclick="toggleMenu()">&#8942;</button>
+
+                <div id="menuDropdown" class="menu-dropdown" role="menu">
+                {% if user_id == post_owner_id %}
+                    <button onclick="window.location.href='{{ url_for('edit_post', post_id=post_id) }}'">Edit</button>
+                    <button onclick="deletePost({{ post_id }})">Delete</button>
+                    <button onclick="likePost('{{ post_id }}')">Like</button>
+                {% else %}
+                    <form action="{% if is_following %}/unfollow/{{ post_owner_id }}{% else %}/follow/{{ post_owner_id }}{% endif %}" method="post" style="margin: 0;">
+                    <button type="submit">{% if is_following %}Unfollow{% else %}Follow{% endif %} {{ username }}</button>
+                    </form>
+                    <button onclick="likePost({{ post_id }})">Like</button>
+                {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+
+        <div class="post-title">{{ title|safe }}</div>
+        <div class="post-body">
+          <pre>{{ content|safe }}</pre>
+        </div>
+
+        {% if user_id and user_id != post_owner_id %}
+          <form action="{% if is_following %}/unfollow/{{ post_owner_id }}{% else %}/follow/{{ post_owner_id }}{% endif %}" method="post">
+            <button type="submit">{% if is_following %}Unfollow{% else %}Follow{% endif %} {{ username }}</button>
+          </form>
+        {% endif %}
+      </div>
+
+      <div class="comments-thread">
+        <h3>Comments Thread:</h3>
+        {% for comment in comments %}
+          <div class="comment">
+            <strong>{{ comment.username }}</strong>: {{ comment.content }}
+          </div>
+        {% endfor %}
+
+        {% if user_id %}
+        <form method="post" action="{{ url_for('add_comment', post_id=post_id) }}">
+          <label for="commenter_email">Email:</label>
+          <input type="email" name="commenter_email" id="commenter_email" required>
+
+          <label for="comment_content">Comment:</label>
+          <textarea name="comment_content" id="comment_content" placeholder="Write your comment here..." required></textarea>
+
+          <button type="submit">Add Comment</button>
+        </form>
+        {% else %}
+        <p>You need to <a href="{{ url_for('login') }}">log in</a> to add comments.</p>
+        {% endif %}
+      </div>
+    </main>
+  </div>
+</body>
+
+<script>
+    const menuBtn = document.querySelector('.menu-btn');
+    const menuDropdown = document.getElementById('menuDropdown');
+  
+    function toggleMenu() {
+      menuDropdown.classList.toggle('show');
+    }
+  
+    // Close menu if clicking outside
+    window.addEventListener('click', function(event) {
+      if (!event.target.closest('.menu-container')) {
+        menuDropdown.classList.remove('show');
+      }
+    });
+  
+    // Placeholder deletePost and likePost functions
+    function deletePost(postId) {
+      if (confirm('Are you sure you want to delete this post?')) {
+        // Call your delete endpoint, e.g., via fetch or form submission
+        // Example redirect:
+        window.location.href = `/delete_post/${postId}`;
+      }
+    }
+  
+    function likePost(postId) {
+      // Implement your like logic here, e.g., send AJAX to server
+      alert('Like functionality triggered for post ' + postId);
+    }
+  </script>
+  
+</html>

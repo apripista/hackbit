@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Posts - InspiraHub</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='static/CSS/flash-styles.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f2f4f8;
+        }
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background: #111827;
+            color: #f3f4f6;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        .sidebar h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #10b981;
+        }
+        .sidebar a {
+            color: #d1d5db;
+            text-decoration: none;
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+            transition: 0.3s;
+        }
+        .sidebar a:hover {
+            background: #1f2937;
+            color: #10b981;
+        }
+        .sidebar form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .sidebar input,
+        .sidebar select,
+        .sidebar button {
+            padding: 0.4rem;
+            border-radius: 5px;
+            border: none;
+        }
+        .sidebar button {
+            background-color: #10b981;
+            color: white;
+            cursor: pointer;
+        }
+        .sidebar-toggle {
+            display: none;
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #10b981;
+            z-index: 1001;
+        }
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            margin-left: 250px;
+            transition: margin 0.3s ease;
+        }
+        .container {
+            background-color: rgba(138, 138, 138, 0.8);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 3rem auto;
+        }
+        .container h1 {
+            margin-bottom: 20px;
+            color: #111827;
+            text-align: center;
+        }
+        .posts-section h2 {
+            color: #111827;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .post {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .profile-image {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            margin-right: 10px;
+            float: left;
+        }
+        .post-content h3 {
+            margin: 0 0 10px;
+            color: #111827;
+        }
+        .post-content h3 a {
+            color: #1900ff;
+            text-decoration: none;
+        }
+        .post-content h3 a:hover {
+            text-decoration: underline solid rgb(149, 17, 2) 3px;
+        }
+        .post-content p {
+            font-size: 16px;
+            color: #111827;
+            margin-bottom: 10px;
+        }
+        .post-content small {
+            color: #888;
+            font-size: 14px;
+        }
+        .read-more {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #1900ff;
+        }
+        .read-more:hover {
+            text-decoration: underline solid rgb(149, 17, 2) 3px;
+        }
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .pagination a,
+        .pagination span {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #1900ff;
+        }
+        .pagination a:hover {
+            text-decoration: underline solid rgb(149, 17, 2) 3px;
+        }
+        .pagination span {
+            color: #111827;
+            font-weight: bold;
+        }
+        .no-posts {
+            text-align: center;
+            color: #111827;
+            margin-top: 50px;
+        }
+        .flash-message {
+            background-color: #ffcccc;
+            color: #333;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .sidebar-toggle {
+                display: block;
+            }
+            .main-content {
+                margin-left: 0;
+                padding-top: 5rem;
+            }
+            .container {
+                margin: 1rem auto;
+                padding: 20px;
+                max-width: 90%;
+            }
+            .posts-grid {
+                grid-template-columns: 1fr;
+            }
+            .post-content p,
+            .post-content small {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('active')">☰</button>
+    <div class="layout">
+        <aside class="sidebar">
+            <h1>InspiraHub</h1>
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('view_posts') }}">Posts</a>
+            <a href="{{ url_for('create_post') }}">New Post</a>
+            <a href="{{ url_for('settings') }}">Settings</a>
+            <a href="{{ url_for('upload_profile_image') }}">Upload Image</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </aside>
+        <main class="main-content">
+            <div class="container">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="flash-message {{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                <h1>User Posts</h1>
+                <div class="posts-section">
+                    <h2>User's Posts</h2>
+                    {% if posts %}
+                        <div class="posts-grid">
+                            {% for post in posts %}
+                                <div class="post">
+                                    <img src="{{ url_for('uploaded_file', filename=post.profile_picture or 'default_profile_image.png') }}" class="profile-image" alt="Profile Image">
+                                    <div class="post-content">
+                                        <h3><a href="{{ url_for('view_user_posts', user_id=user_id) }}">{{ post.title }}</a></h3>
+                                        <p>{{ post.content[:100] }}{% if post.content|length > 100 %}...{% endif %}</p>
+                                        <small>
+                                            {% if post.edited_at %}
+                                                Edited on {{ post.edited_at.strftime('%Y-%m-%d %H:%M:%S %A') }}<br>
+                                                Posted on {{ post.created_at.strftime('%Y-%m-%d %H:%M:%S %A') }}
+                                            {% else %}
+                                                Posted on {{ post.created_at.strftime('%Y-%m-%d %H:%M:%S %A') }}
+                                            {% endif %}
+                                        </small>
+                                        <a class="read-more" href="{{ url_for('full_post', post_id=post.id) }}">Read More</a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="pagination">
+                            {% for page_number in range(1, total_pages + 1) %}
+                                {% if page_number == page %}
+                                    <span>{{ page_number }}</span>
+                                {% else %}
+                                    <a href="{{ url_for('view_user_posts', user_id=user_id, page=page_number) }}">{{ page_number }}</a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="no-posts">This user has no posts yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="{{ url_for('static', filename='static/JS/flash-disappear.js') }}"></script>
+</body>
+</html>

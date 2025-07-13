@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /* Your styles go here */
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+    <h1>Your Posts</h1>
+     <div>
+        <a href="{{ url_for('view_posts') }}">view_posts</a> |
+        <a href="{{ url_for('profile') }}">Profile</a> |
+        <a href="{{ url_for('index') }}">Home</a> |
+        <a href="{{ url_for('create_post') }}">Create a Post</a>
+    </div>
+    <form method="get" action="{{ url_for('your_posts') }}">
+        <label for="search_title">Search Title:</label>
+        <input type="text" name="search_title" id="search_title">
+        <input type="submit" value="Search">
+    </form>
+
+    {% if user_posts %}
+        {% for post in user_posts %}
+            <div class="post-container">
+                <img class="profile-picture" src="{{ url_for('uploaded_file', filename=post.profile_picture) }}" alt="Profile Picture" width="50" height="50"><br>
+                <strong>Title:</strong> <span style="color: teal; font-size: 24px;">{{ post.title }}</span><br>{{ post.title }}<br>
+                <strong>Content:</strong>
+                <!-- Manually escape HTML tags -->
+                <pre>{{ post.content|replace('<', '&lt;')|replace('>', '&gt;') | safe }}</pre>
+                {% if post.edited_at %}
+                    <small class="posted-post">Posted by {{ post.username }} on {{ post.created_at.strftime('%A, %B %d, %Y, %I:%M %p') }} ({{ your_custom_time_function(post.created_at) }} ago)</small><br>
+                {% else %}
+                    <small>Posted by {{ post.username }} on {{ post.created_at.strftime('%A, %B %d, %Y, %I:%M %p') }} ({{ your_custom_time_function(post.created_at) }} ago)</small><br>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No posts found.</p>
+    {% endif %}
+
+    <!-- Pagination -->
+    <div class="pagination">
+        {% if total_posts > posts_per_page %}
+            {% if page > 1 %}
+                <a href="{{ url_for('your_posts', page=page-4) }}">Previous</a>
+            {% endif %}
+
+            {% set start_page = max(1, page - 2) %}
+            {% set end_page = min(total_posts // posts_per_page + 1, start_page + 4) %}
+
+            {% for num in range(start_page, end_page + 1) %}
+                {% if num == page %}
+                    <strong>{{ num }}</strong>
+                {% else %}
+                    <a href="{{ url_for('your_posts', page=num) }}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page * posts_per_page < total_posts %}
+                <a href="{{ url_for('your_posts', page=page+5) }}">Next</a>
+            {% endif %}
+        {% endif %}
+    </div>
+</body>
+</html>

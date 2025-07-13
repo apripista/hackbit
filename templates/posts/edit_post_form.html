@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Post - InspiraHub</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='static/CSS/flash-styles.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.3/tinymce.min.js" integrity="sha512-vjdF0g2F1qHyTW1uKCWj0G7I5YhFAN9GFEUACJoT7ddNSl3U3gXFNGMLszL0RhgO5c8G2zD1V8k6Abp3EBNF000==" crossorigin="anonymous"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f2f4f8;
+        }
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background: #111827;
+            color: #f3f4f6;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        .sidebar h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #10b981;
+        }
+        .sidebar a {
+            color: #d1d5db;
+            text-decoration: none;
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+            transition: 0.3s;
+        }
+        .sidebar a:hover {
+            background: #1f2937;
+            color: #10b981;
+        }
+        .sidebar form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .sidebar input,
+        .sidebar select,
+        .sidebar button {
+            padding: 0.4rem;
+            border-radius: 5px;
+            border: none;
+        }
+        .sidebar button {
+            background-color: #10b981;
+            color: white;
+            cursor: pointer;
+        }
+        .sidebar-toggle {
+            display: none;
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #10b981;
+            z-index: 1001;
+        }
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            margin-left: 250px;
+            transition: margin 0.3s ease;
+        }
+        .container {
+            background-color: rgba(138, 138, 138, 0.8);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 3rem auto;
+        }
+        .container h1 {
+            margin-bottom: 20px;
+            color: #111827;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #111827;
+        }
+        .form-group input[type="text"],
+        .form-group select {
+            width: 100%;
+            background-color: #908981;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            border-bottom: 2px solid teal;
+            outline: none;
+        }
+        .form-group textarea {
+            width: 100%;
+            background-color: #908981;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            border-bottom: 2px solid teal;
+            outline: none;
+            height: 600px;
+        }
+        .form-group button {
+            background-color: #4caf50;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .form-group button:hover {
+            background-color: #45a049;
+        }
+        .links {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .links a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #1900ff;
+        }
+        .links a:hover {
+            text-decoration: underline solid rgb(149, 17, 2) 3px;
+        }
+        .flash-message {
+            background-color: #ffcccc;
+            color: #333;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .sidebar-toggle {
+                display: block;
+            }
+            .main-content {
+                margin-left: 0;
+                padding-top: 5rem;
+            }
+            .container {
+                margin: 1rem auto;
+                padding: 20px;
+                max-width: 90%;
+            }
+            .form-group input[type="text"],
+            .form-group select,
+            .form-group textarea {
+                font-size: 14px;
+            }
+            .form-group button {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('active')">☰</button>
+    <div class="layout">
+        <aside class="sidebar">
+            <h1>InspiraHub</h1>
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('view_posts') }}">Posts</a>
+            <a href="{{ url_for('create_post') }}">New Post</a>
+            <a href="{{ url_for('settings') }}">Settings</a>
+            <a href="{{ url_for('upload_profile_image') }}">Upload Image</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </aside>
+        <main class="main-content">
+            <div class="container">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="flash-message {{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                <h1>Edit Your Post</h1>
+                <form action="{{ url_for('edit_post', post_id=post_id) }}" method="post" name="edit_post_form" onsubmit="handleSubmit(event)">
+                    <div class="form-group">
+                        <label for="title">Edit Title:</label>
+                        <input type="text" name="title" id="title" value="{{ title }}" placeholder="Title" required title="Should have a title" maxlength="50"/>
+                        <label for="content">Edit Content:</label>
+                        <textarea id="code-editor" name="content" placeholder="Edit your post..." required title="Put your post here" maxlength="50500">{{ content }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <div class="links">
+                            <button type="submit">Update Post</button>
+                            <a href="{{ url_for('view_posts') }}">Back</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+    <script>
+        function handleSubmit(event) {
+            try {
+                if (typeof tinymce !== 'undefined' && tinymce.get('code-editor')) {
+                    tinymce.triggerSave();
+                    console.log('Form submitting:', tinymce.get('code-editor').getContent());
+                } else {
+                    console.warn('TinyMCE not loaded, using textarea value');
+                    const textarea = document.getElementById('code-editor');
+                    console.log('Form submitting:', textarea.value);
+                }
+            } catch (e) {
+                console.error('Error during form submission:', e);
+                event.preventDefault();
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                if (typeof tinymce !== 'undefined') {
+                    tinymce.init({
+                        selector: '#code-editor',
+                        height: 600,
+                        plugins: 'code lists link image table',
+                        toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | code',
+                        menubar: false,
+                        content_style: 'body { font-family: Arial, sans-serif; font-size: 16px; background-color: #908981; color: #111827; }',
+                        setup: function (editor) {
+                            editor.on('init', function () {
+                                console.log('TinyMCE initialized');
+                                Prism.highlightAll();
+                            });
+                            editor.on('error', function (e) {
+                                console.error('TinyMCE error:', e);
+                            });
+                        }
+                    });
+                } else {
+                    console.warn('TinyMCE script not loaded');
+                }
+            } catch (e) {
+                console.error('TinyMCE initialization failed:', e);
+            }
+        });
+    </script>
+    <script src="{{ url_for('static', filename='static/JS/flash-disappear.js') }}"></script>
+</body>
+</html>
