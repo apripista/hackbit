@@ -1,0 +1,8 @@
+/* Add these styles to your CSS file or <style> section in the <head> of your HTML */
+.result-found {
+    color: teal;
+}
+
+.no-result-found {
+    color: red;
+}

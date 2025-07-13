@@ -1,0 +1,112 @@
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #969696;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            height: auto;
+            background-color: #767575;
+            color: rgb(0, 0, 0);
+            padding: 10px;
+            text-align: center;
+        }
+        .header p{
+            color: whitesmoke;
+        }
+        .header a{
+            display: inline;
+            color: rgb(2, 252, 2);
+            margin: 30px;
+        }
+
+        .header a:hover{
+            text-decoration: underline rgb(134, 81, 81);
+            color: rgb(107, 90, 73);
+        }
+
+        /* POST OWNER IMAGE */
+        .image{
+            float: left;
+            display: inherit;
+            margin: 1px 13px 1px;
+            background-color: #969696;
+        }
+
+        .profile-image {
+            border-radius: 50%;
+            width: 150px; /* Set the width and height */
+            height: 150px;
+        }
+
+        /* POST CONTENT, title,
+        content, post creator, created date, likes */
+        .content{
+            margin-left: 100px;
+            display: inherit;
+        }
+
+        .contenter{
+            margin: 20px 100px;
+        }
+
+        .container{
+            margin: 40px;
+        }
+
+
+        .post {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #b5b5b5;
+            border-radius: 10px;
+        }
+
+        .post h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .post p {
+            font-size: 20px;
+            margin: 10px;
+            white-space: pre-wrap; /* Preserve line breaks and spaces */
+        }
+
+        .posts {
+            color: rgb(12, 12, 12);
+        }
+
+        .title{
+            text-align: center;
+            display: inline;
+            margin: 20%;
+            color: rgb(84, 68, 68);
+        }
+
+        /*POST USERNAME, CREATED DATE, LIKES*/
+        .poster-date-likes{
+            background-color: #969696;
+        }
+        .poster{
+            color: rgb(10, 108, 3);
+            font-style: italic;
+        }
+        .date{
+            color: rgb(6, 88, 19);
+            font-style: italic;
+        }
+        .likes{
+            color: rgb(7, 35, 1);
+            font-style: italic;
+        }
+
+        /*PAGINATION LINKS*/
+
+        .pagination{
+            font-size: 20px;
+        }
+        .pagination a:hover{
+            color: rgb(190, 74, 93);
+        }

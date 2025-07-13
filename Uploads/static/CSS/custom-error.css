@@ -1,0 +1,30 @@
+	body {
+            font-family: Arial, sans-serif;
+            background-color: #000000;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        p {
+            font-size: 18px;
+            color: #cacaca;
+
+        }
+        .home-link {
+            margin-top: 20px;
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+        .home-link:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            color: #ff6347; /* Tomato color for the header */
+        }

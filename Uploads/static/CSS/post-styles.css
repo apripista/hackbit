@@ -1,0 +1,95 @@
+        .posts {
+            margin: 50px;
+            padding: 20px;
+            background-color: rgb(245, 245, 245);
+            border-radius: 5px;
+            box-shadow: 0 8px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .post {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-bottom: 4px solid #ddd;
+        }
+
+        .post p {
+            font-size: 18px;
+            margin: 0;
+        }
+
+        .post small {
+            color: #888;
+        }
+        .profile-image {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            margin-right: 10px;
+            float: left;
+        }
+
+        /* Add this CSS to style the pagination links */
+        .pagination a {
+            color: #fff; /* Text color for pagination links */
+            background-color: #007bff; /* Background color for pagination links */
+            border: 1px solid #007bff; /* Border color for pagination links */
+            padding: 8px 16px; /* Padding for pagination links */
+            margin: 9px 8px; /* Margin between pagination links */
+            border-radius: 4px; /* Border radius for pagination links */
+            text-decoration: none; /* Remove underline from pagination links */
+        }
+
+        /* Style the current page link */
+        .pagination span {
+            background-color: #007bff; /* Background color for the current page link */
+            color: #fff; /* Text color for the current page link */
+            border: 1px solid #007bff; /* Border color for the current page link */
+            padding: 8px 16px; /* Padding for the current page link */
+            margin: 4px 4px; /* Margin for the current page link */
+            border-radius: 4px; /* Border radius for the current page link */
+        }
+        
+        /* Style the pagination links on hover */
+        .pagination a:hover {
+            background-color: #fff; /* Change background color to white on hover */
+            color: #007bff; /* Change text color to blue on hover */
+        }
+        /* position the pagination links at the bottom of the posts */
+        .pagination {
+            position: static;
+            bottom: 200px; /* Adjust the distance from the bottom*/
+        }
+
+        .delete-btn{
+            color: wheat;
+            font-size: 18px;
+            border: solid red;
+            border-radius: 10px;
+            cursor: pointer;
+            background-color: red;
+        }
+
+        button{
+            color: white;
+            font-size: 20px;
+            border: 1px solid teal;
+            border-radius: 10px;
+            cursor: pointer;
+            background-color: teal;
+        }
+
+        .read-more{
+            margin: 4px;
+            display: inline-block;
+            padding: 10px;
+
+        }
+        .read-more:hover{
+            text-decoration: underline;
+            text-decoration-color: rgb(255, 0, 0);
+            transition: 0.3s;
+        }
+
+        div.profile-image{
+            float: left;
+        }
