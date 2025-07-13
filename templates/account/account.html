@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - InsipiraHub</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f2f4f8;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #111827;
+            color: #f3f4f6;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #10b981;
+        }
+
+        .sidebar a {
+            color: #d1d5db;
+            text-decoration: none;
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            background: #1f2937;
+            color: #10b981;
+        }
+
+        .sidebar form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .sidebar input,
+        .sidebar select,
+        .sidebar button {
+            padding: 0.4rem;
+            border-radius: 5px;
+            border: none;
+        }
+
+        .sidebar button {
+            background-color: #10b981;
+            color: white;
+            cursor: pointer;
+        }
+
+        .sidebar-toggle {
+            display: none;
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #10b981;
+            z-index: 1001;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            margin-left: 250px;
+            transition: margin 0.3s ease;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .account-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+            text-align: center;
+        }
+
+        .account-list {
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .account-list .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .account-list .nav-buttons a {
+            font-size: 1rem;
+            color: #fff;
+            text-decoration: none;
+            background-color: #10b981;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .account-list .nav-buttons a:hover {
+            background-color: #0d8f6b;
+            text-decoration: none;
+        }
+
+        .account-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+        }
+
+        .account-info .info-column {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            flex: 1;
+            min-width: 300px;
+            max-width: 400px;
+            text-align: left;
+        }
+
+        .account-info h3 {
+            font-size: 1.2rem;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .account-info p {
+            font-size: 0.9rem;
+            color: #4b5563;
+            line-height: 1.5;
+        }
+
+        .account-info a {
+            color: #10b981;
+            text-decoration: none;
+        }
+
+        .account-info a:hover {
+            text-decoration: underline;
+        }
+
+        .search-bar {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1002;
+        }
+
+        .search-bar input {
+            padding: 0.5rem;
+            border-radius: 5px;
+            border: 1px solid #d1d5db;
+            width: 200px;
+            font-size: 0.9rem;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
+        }
+
+        .flash-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .sidebar-toggle {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding-top: 5rem;
+            }
+
+            .container {
+                margin: 1rem auto;
+            }
+
+            .search-bar {
+                top: 0.5rem;
+                right: 0.5rem;
+            }
+
+            .search-bar input {
+                width: 150px;
+            }
+
+            .account-section h2 {
+                font-size: 1.5rem;
+            }
+
+            .account-list .nav-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .account-list .nav-buttons a {
+                font-size: 0.9rem;
+            }
+
+            .account-info .info-column {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('active')">☰</button>
+
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search...">
+    </div>
+
+    <div class="layout">
+        <aside class="sidebar">
+            <h1>InspiraHub</h1>
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('view_posts') }}">Posts</a>
+            <a href="{{ url_for('create_post') }}">New Post</a>
+            <a href="{{ url_for('settings') }}">Settings</a>
+            <a href="{{ url_for('upload_profile_image') }}">Upload Image</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </aside>
+
+        <main class="main-content">
+            <div class="container">
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="flash-message">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <!-- Account Section -->
+                <div class="account-section">
+                    <h2>Welcome to Your Account</h2>
+                    <div class="account-list">
+                        <div class="nav-buttons">
+                            <a href="{{ url_for('delete_account') }}">Delete Account</a>
+                            <a href="{{ url_for('update_email') }}">Change Email</a>
+                            <a href="{{ url_for('edit_profile') }}">Change Profile</a>
+                            <a href="{{ url_for('change_password') }}">Change Password</a>
+                        </div>
+                    </div>
+                    <div class="account-info">
+                        <div class="info-column">
+                            <h3>Why Delete Account?</h3>
+                            <p>
+                                Deleting your account permanently removes your data from InsipiraHub. This action is irreversible, so ensure you back up any important posts or information before proceeding. Visit the <a href="{{ url_for('delete_account') }}">Delete Account</a> page if you’re certain you want to proceed.
+                            </p>
+                        </div>
+                        <div class="info-column">
+                            <h3>Importance of Updating Your Email</h3>
+                            <p>
+                                Keeping your email address up to date ensures you receive important notifications, such as password reset links or TFA codes. An updated email also helps maintain account security. Go to the <a href="{{ url_for('update_email') }}">Change Email</a> page to update your email address.
+                            </p>
+                        </div>
+                        <div class="info-column">
+                            <h3>Benefits of Changing Your Profile</h3>
+                            <p>
+                                Updating your profile, such as your username or profile picture, personalizes your InsipiraHub experience and helps others recognize you. A current profile enhances your engagement with the community. Check the <a href="{{ url_for('edit_profile') }}">Change Profile</a> page to make updates.
+                            </p>
+                        </div>
+                        <div class="info-column">
+                            <h3>Secure Your Account with a Strong Password and TFA</h3>
+                            <p>
+                                Changing your password regularly and enabling Two-Factor Authentication (TFA) adds extra layers of security to your account. TFA requires a verification code in addition to your password, protecting against unauthorized access. Visit the <a href="{{ url_for('change_password') }}">Change Password</a> page or enable TFA in your settings.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Flash Disappear Script -->
+    <script src="{{ url_for('static', filename='static/JS/flash-disappear.js') }}"></script>
+</body>
+</html>

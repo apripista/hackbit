@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <h1>User Profile</h1>
+
+    <p><strong>Username:</strong> {{ username }}</p>
+    <p><strong>First Name:</strong> {{ first_name }}</p>
+    <p><strong>Last Name:</strong> {{ last_name }}</p>
+    <p><strong>Email:</strong> {{ email }}</p>
+    <p><strong>Country:</strong> {{ country }}</p>
+    <a href="{{ url_for('edit_profile') }}">Edit Profile</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+</body>
+</html>

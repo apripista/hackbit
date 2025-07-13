@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Email Address - InsipiraHub</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f2f4f8;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #111827;
+            color: #f3f4f6;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #10b981;
+        }
+
+        .sidebar a {
+            color: #d1d5db;
+            text-decoration: none;
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            background: #1f2937;
+            color: #10b981;
+        }
+
+        .sidebar form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .sidebar input,
+        .sidebar select,
+        .sidebar button {
+            padding: 0.4rem;
+            border-radius: 5px;
+            border: none;
+        }
+
+        .sidebar button {
+            background-color: #10b981;
+            color: white;
+            cursor: pointer;
+        }
+
+        .sidebar-toggle {
+            display: none;
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #10b981;
+            z-index: 1001;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            margin-left: 250px;
+            transition: margin 0.3s ease;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .email-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+            text-align: center;
+        }
+
+        .email-form {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 2rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .form-group {
+            width: 100%;
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            font-size: 1rem;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 5px;
+            border: 1px solid #d1d5db;
+            font-size: 0.9rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
+        }
+
+        .form-group button {
+            background-color: #10b981;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-group button:hover {
+            background-color: #0d8f6b;
+        }
+
+        .email-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+        }
+
+        .email-info .info-column {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            flex: 1;
+            min-width: 300px;
+            max-width: 400px;
+            text-align: left;
+        }
+
+        .email-info h3 {
+            font-size: 1.2rem;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .email-info p {
+            font-size: 0.9rem;
+            color: #4b5563;
+            line-height: 1.5;
+        }
+
+        .email-info a {
+            color: #10b981;
+            text-decoration: none;
+        }
+
+        .email-info a:hover {
+            text-decoration: underline;
+        }
+
+        .search-bar {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1002;
+        }
+
+        .search-bar input {
+            padding: 0.5rem;
+            border-radius: 5px;
+            border: 1px solid #d1d5db;
+            width: 200px;
+            font-size: 0.9rem;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
+        }
+
+        .flash-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .sidebar-toggle {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding-top: 5rem;
+            }
+
+            .container {
+                margin: 1rem auto;
+            }
+
+            .search-bar {
+                top: 0.5rem;
+                right: 0.5rem;
+            }
+
+            .search-bar input {
+                width: 150px;
+            }
+
+            .email-section h2 {
+                font-size: 1.5rem;
+            }
+
+            .email-form {
+                padding: 1rem;
+            }
+
+            .form-group label,
+            .form-group input,
+            .form-group button {
+                font-size: 0.9rem;
+            }
+
+            .email-info .info-column {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('active')">☰</button>
+
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search...">
+    </div>
+
+    <div class="layout">
+        <aside class="sidebar">
+            <h1>InspiraHub</h1>
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('view_posts') }}">Posts</a>
+            <a href="{{ url_for('create_post') }}">New Post</a>
+            <a href="{{ url_for('settings') }}">Settings</a>
+            <a href="{{ url_for('upload_profile_image') }}">Upload Image</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </aside>
+
+        <main class="main-content">
+            <div class="container">
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="flash-message">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <!-- Email Update Section -->
+                <div class="email-section">
+                    <h2>Update Email Address</h2>
+                    <div class="email-form">
+                        <form method="POST" action="{{ url_for('update_email') }}" onsubmit="return checkEmailAvailability()">
+                            <div class="form-group">
+                                <label for="old_email">Current Email:</label>
+                                <input type="email" id="old_email" name="old_email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="new_email">New Email Address:</label>
+                                <input type="email" id="new_email" name="new_email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="security_pin">Security PIN:</label>
+                                <input type="password" id="security_pin" name="security_pin" required>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit">Update Email</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="email-info">
+                        <div class="info-column">
+                            <h3>Why Update Your Email?</h3>
+                            <p>
+                                Keeping your email address current ensures you receive important notifications, such as password reset links or TFA codes. An updated email enhances account security and accessibility. Use the form above to update your email.
+                            </p>
+                        </div>
+                        <div class="info-column">
+                            <h3>Importance of a Security PIN</h3>
+                            <p>
+                                A security PIN adds an extra layer of protection when updating sensitive information like your email. Ensure your PIN is strong and unique to prevent unauthorized changes. Update your email securely using the form above.
+                            </p>
+                        </div>
+                        <div class="info-column">
+                            <h3>Enable Two-Factor Authentication</h3>
+                            <p>
+                                Two-Factor Authentication (TFA) requires a verification code in addition to your password, protecting your account from unauthorized access. Enable TFA to secure your email updates and other actions. Visit the <a href="{{ url_for('activate_tfa') }}">Activate TFA</a> page to set it up.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Flash Disappear Script -->
+    <script src="{{ url_for('static', filename='static/JS/flash-disappear.js') }}"></script>
+    <script>
+        function isValidEmail(email) {
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function checkEmailAvailability() {
+            var newEmail = document.getElementById('new_email').value;
+            var securityPin = document.getElementById('security_pin').value;
+
+            if (!isValidEmail(newEmail)) {
+                alert('Invalid email address format.');
+                return false;
+            }
+
+            if (securityPin.length < 4) {
+                alert('Security PIN must be at least 4 characters long.');
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+</body>
+</html>

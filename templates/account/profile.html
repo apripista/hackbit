@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ username.title() }} - InspiraHub</title>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f2f4f8;
+    }
+
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 250px;
+      background: #111827;
+      color: #f3f4f6;
+      padding: 2rem 1rem;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 1000;
+      overflow-y: auto;
+    }
+
+    .sidebar h1 {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      color: #10b981;
+    }
+
+    .sidebar .sidebar-profile {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-style: italic;
+    }
+
+    .sidebar .profile-picture {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #10b981;
+      margin-bottom: 0.5rem;
+    }
+
+    .sidebar .sidebar-profile h2 {
+      font-size: 1rem;
+      margin: 0.3rem 0;
+    }
+
+    .sidebar .sidebar-profile .inline-follow {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .sidebar a {
+      color: #d1d5db;
+      text-decoration: none;
+      padding: 0.8rem 1rem;
+      border-radius: 10px;
+      margin-bottom: 0.5rem;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover {
+      background: #1f2937;
+      color: #10b981;
+    }
+
+    .sidebar form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .sidebar input,
+    .sidebar select,
+    .sidebar button {
+      padding: 0.4rem;
+      border-radius: 5px;
+      border: none;
+    }
+
+    .sidebar button {
+      background-color: #10b981;
+      color: white;
+      cursor: pointer;
+    }
+
+    .sidebar-toggle {
+      display: none;
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: #10b981;
+      z-index: 1001;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 2rem;
+      margin-left: 250px;
+      transition: margin 0.3s ease;
+    }
+
+    .top-profile {
+      display: none;
+      background: white;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    .top-profile img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #10b981;
+    }
+
+    .top-profile .top-info {
+      font-size: 0.85rem;
+      font-style: italic;
+      margin-top: 0.5rem;
+      color: #374151;
+    }
+
+    .top-profile .top-info div {
+      display: inline;
+      margin-right: 1rem;
+    }
+
+    .posts-section h2 {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      color: #1f2937;
+    }
+
+    .posts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .post {
+      background: white;
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .post img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin-bottom: 0.5rem;
+    }
+
+    .post h3 {
+      font-size: 1.1rem;
+      color: #111827;
+      margin-bottom: 0.5rem;
+    }
+
+    .post p {
+      font-size: 0.9rem;
+      color: #4b5563;
+      margin-bottom: 0.5rem;
+    }
+
+    .read-more {
+      margin-top: auto;
+      text-align: right;
+      font-size: 0.85rem;
+      color: #10b981;
+      text-decoration: none;
+    }
+
+    .read-more:hover {
+      text-decoration: underline;
+    }
+
+    .pagination {
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .pagination a,
+    .pagination span {
+      margin: 0 0.3rem;
+      padding: 0.5rem 1rem;
+      background: #e5e7eb;
+      color: #111827;
+      border-radius: 20px;
+      text-decoration: none;
+    }
+
+    .pagination span {
+      font-weight: bold;
+    }
+
+    .search-bar {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 1002;
+    }
+
+    .search-bar input {
+      padding: 0.5rem;
+      border-radius: 5px;
+      border: 1px solid #d1d5db;
+      width: 200px;
+      font-size: 0.9rem;
+    }
+
+    .search-bar input:focus {
+      outline: none;
+      border-color: #10b981;
+      box-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.active {
+        transform: translateX(0);
+      }
+
+      .sidebar-toggle {
+        display: block;
+      }
+
+      .main-content {
+        margin-left: 0;
+        padding-top: 5rem;
+      }
+
+      .top-profile {
+        display: block;
+      }
+
+      .top-profile .top-info {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+
+      .top-profile .top-info div {
+        display: inline;
+        white-space: nowrap;
+      }
+
+      .search-bar {
+        top: 0.5rem;
+        right: 0.5rem;
+      }
+
+      .search-bar input {
+        width: 150px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('active')">☰</button>
+
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search posts..." oninput="searchPosts()">
+  </div>
+
+  <div class="top-profile">
+    <img src="{{ profile_picture }}" alt="Profile Picture">
+    <div class="top-info">
+      <div>@{{ username.title() }}</div>
+      <div>Email: {{ email.lower() }}</div>
+      <div>Joined: {{ registration_date|format_registration_date }}</div>
+      <div>Followers: {{ followers_count }}</div>
+      <div>Following: {{ following_count }}</div>
+      <div>{{ post_count }} posts</div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h1>InspiraHub</h1>
+      <div class="sidebar-profile">
+        <img class="profile-picture" src="{{ profile_picture }}" alt="Profile Picture">
+        <h2>@{{ username.title() }}</h2>
+        <p><strong>Email:</strong> {{ email.lower() }}</p>
+        <p><strong>Joined:</strong> {{ registration_date|format_registration_date }}</p>
+        <div class="inline-follow">
+          <p><strong>Followers:</strong> <a href="{{ url_for('followers_profile', user_id=user_id) }}">{{ followers_count }}</a></p>
+          <p><strong>Following:</strong> <a href="{{ url_for('following') }}">{{ following_count }}</a></p>
+        </div>
+        <p><strong>{{ post_count }} posts</strong></p>
+      </div>
+      <a href="{{ url_for('index') }}">Home</a>
+      <a href="{{ url_for('view_posts') }}">Posts</a>
+      <a href="{{ url_for('create_post') }}">New Post</a>
+      <a href="{{ url_for('settings') }}">Settings</a>
+      <a href="{{ url_for('upload_profile_image') }}">Upload Image</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    </aside>
+
+    <main class="main-content">
+      <div class="posts-section">
+        <h2>Posts</h2>
+        {% if posts %}
+        <div class="posts-grid">
+          {% for post in posts %}
+          <div class="post" data-title="{{ post.title }}" data-content="{{ post.content }}">
+            <img src="{{ url_for('uploaded_file', filename=post.profile_picture) }}" alt="Author Picture">
+            <h3><a href="{{ url_for('view_user_posts', user_id=post.user_id) }}">{{ post.title }}</a></h3>
+            <p>{{ post.content[:100] }}{% if post.content|length > 100 %}...{% endif %}</p>
+            <p><small>{{ post.created_at.strftime('%Y-%m-%d') }}</small></p>
+            <a class="read-more" href="{{ url_for('full_post', post_id=post.id) }}">Read More</a>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="pagination">
+          {% for page_number in pagination_range %}
+            {% if page_number == current_page %}
+            <span>{{ page_number }}</span>
+            {% else %}
+            <a href="{{ url_for('profile', username=username, page=page_number) }}">{{ page_number }}</a>
+            {% endif %}
+          {% endfor %}
+        </div>
+        {% else %}
+        <p style="text-align:center;">No posts yet. <a href="{{ url_for('create_post') }}">Create one now</a>!</p>
+        {% endif %}
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function searchPosts() {
+      const searchInput = document.getElementById('searchInput').value.toLowerCase();
+      const posts = document.querySelectorAll('.post');
+
+      posts.forEach(post => {
+        const title = post.getAttribute('data-title').toLowerCase();
+        const content = post.getAttribute('data-content').toLowerCase();
+        const isMatch = title.includes(searchInput) || content.includes(searchInput);
+        post.style.display = isMatch ? 'flex' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>

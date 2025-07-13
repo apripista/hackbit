@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Account</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <h1>Confirm Account Deletion</h1>
+    <p>Are you sure you want to delete your account?</p>
+    <form action="{{ url_for('delete_account') }}" method="POST">
+        <input type="hidden" name="username" value="{{ current_user_username }}">
+        <input type="password" name="password" placeholder="Enter Your Password" required>
+        <button type="submit">Confirm Delete</button>
+    </form>
+</body>
+</html>
