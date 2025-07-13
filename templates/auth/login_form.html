@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - InsipiraHub</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            font-size: 1.8rem;
+            color: #333;
+            margin: 0;
+        }
+        .header .search-bar {
+            display: flex;
+            align-items: center;
+        }
+        .header .search-bar input {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px 0 0 5px;
+            font-size: 0.9rem;
+        }
+        .header .search-bar button {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-left: none;
+            border-radius: 0 5px 5px 0;
+            background-color: #f5f5f5;
+            cursor: pointer;
+        }
+        .navbar {
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+        .navbar-nav .nav-link {
+            color: #333 !important;
+            font-size: 1rem;
+            margin: 0 15px;
+        }
+        .navbar-nav .nav-link:hover {
+            color: #007bff !important;
+        }
+        .navbar-nav .nav-item.active .nav-link {
+            background-color: #666;
+            color: #fff !important;
+            border-radius: 5px;
+            padding: 5px 10px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+        .main-content {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+        }
+        .intro-section h2 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .intro-section .details {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .intro-section p {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        .intro-section a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .intro-section a:hover {
+            text-decoration: underline;
+        }
+        .sidebar {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .sidebar h3 {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .sidebar p {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+        .login-section {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+        }
+        .login-section h3 {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .login-form label {
+            font-size: 0.9rem;
+            color: #333;
+        }
+        .login-form input[type="text"],
+        .login-form input[type="password"],
+        .login-form input[type="email"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+            color: #333;
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+        .login-form input[type="text"]:focus,
+        .login-form input[type="password"]:focus,
+        .login-form input[type="email"]:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        .login-form .password-input-container {
+            position: relative;
+            width: 100%;
+        }
+        .login-form .eye-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .login-form .form-group {
+            margin-bottom: 15px;
+        }
+        .login-form button {
+            background-color: #666;
+            color: #fff;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .login-form button:hover {
+            background-color: #007bff;
+        }
+        .login-links {
+            margin-top: 10px;
+            text-align: center;
+        }
+        .login-links a {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin: 0 5px;
+        }
+        .login-links a:hover {
+            text-decoration: underline;
+            color: #0056b3;
+        }
+        .flash-message {
+            background-color: #ff0000;
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: center;
+        }
+        .footer {
+            background-color: #f5f5f5;
+            color: #666;
+            padding: 20px 0;
+            text-align: left;
+            margin-top: 20px;
+        }
+        .footer p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        .footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        .breadcrumb {
+            background-color: #f5f5f5;
+            padding: 10px 0;
+            font-size: 0.9rem;
+        }
+        .breadcrumb a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        .validation-message {
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+        .validation-message.valid {
+            color: green;
+        }
+        .validation-message.invalid {
+            color: red;
+        }
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            .header .search-bar input,
+            .header .search-bar button {
+                font-size: 0.8rem;
+            }
+            .navbar-nav .nav-link {
+                margin: 5px 0;
+            }
+            .intro-section h2 {
+                font-size: 1.2rem;
+            }
+            .login-section h3,
+            .sidebar h3 {
+                font-size: 1rem;
+            }
+            .intro-section p,
+            .intro-section .details,
+            .sidebar p,
+            .login-form label,
+            .login-form input,
+            .login-form button,
+            .login-links a {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main style="background-color: #d6d6d6;">
+        <div class="container">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash-message">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="row">
+                <!-- Left Column: Introduction -->
+                <div class="col-md-8 col-12">
+                    <div class="main-content intro-section">
+                        <!-- Header -->
+                        <header class="header">
+                            <div class="container">
+                                <h1>InsipiraHub</h1>
+                                <div class="search-bar">
+                                    <input type="text" placeholder="Search...">
+                                    <button type="submit">🔍</button>
+                                </div>
+                            </div>
+                        </header>
+
+                        <!-- Navbar -->
+                        <nav class="navbar navbar-expand-lg">
+                            <div class="container">
+                                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                                    <span class="navbar-toggler-icon"></span>
+                                </button>
+                                <div class="collapse navbar-collapse" id="navbarNav">
+                                    <ul class="navbar-nav">
+                                        <li class="nav-item active">
+                                            <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ url_for('about') }}">About Us</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ url_for('your_posts') }}">News</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="#">Contact Us</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </nav>
+                        <h2>Access Your Details.</h2>
+                        <div class="details">
+                            <p>
+                                <strong>Written by:</strong> InsipiraHub Team.<br>
+                                <strong>Published:</strong> 20 April 2025.<br>
+                                <strong>Category:</strong> Uncategorized.<br>
+                                <strong>Hits:</strong> 169 <br>
+                            </p>
+                        </div>
+                        <p>
+                            InsipiraHub is all about allowing you to create a site that matches your vision. The possibilities are limitless; this sample site will get you started.
+                        </p>
+                        <p>
+                            There are a few things you should know to get you started. Every InsipiraHub website has two parts: the Site (which is what your site visitors see) and the Administrator (which is where you will do a lot of the site management). You need to log in to the Administrator separately with the same username and password. There is a link to the administrator on the top menu that you will see when you log in.
+                        </p>
+                        <p>
+                            You can edit articles in the Site by clicking on the edit icon. You can create a new article by clicking on the Create Article link in the top menu.
+                        </p>
+                        <p>
+                            To do basic changes to the appearance your site click Home, Site Settings and Home, Template Settings.
+                        </p>
+                        <p>
+                            To do more advanced things, like edit the contact form, manage users, or install a new template or extension, login to the Administrator.
+                        </p>
+                        <p>
+                            <strong>Some quick tips for working in the Administrator</strong>
+                        </p>
+                        <ul>
+                            <li>To change the image on all the pages: Go to the Module Manager and click on Image Module.</li>
+                            <li>To edit the Side Module: Go to Extensions, Module Manager and click on Side Module.</li>
+                            <li>To edit the Contact Form: Go to Components, Contacts. Click on Your Name.</li>
+                        </ul>
+                        <p>
+                            Once you have your basic site you may want to install your own template (that controls the overall design of your site) and then, perhaps additional site extensions.
+                        </p>
+                        <p>
+                            There is a lot of help available for InsipiraHub. You can visit the InsipiraHub forums and the InsipiraHub documentation site to get started.
+                        </p>
+                    </div>
+
+                    <div class="main-content intro-section">
+                        You are here: <a href="{{ url_for('index') }}">Home</a>
+                    </div>
+                </div>
+
+                <!-- Right Column: Sidebar and Registration Form -->
+                <div class="col-md-4 col-12">
+                    <div class="sidebar">
+                        <h3>We Got You Covered.</h3>
+                        <p>
+                            This is a module where you might want to write more stories, and share them with the whole world. It is so amazing and funy. uploads.
+                        </p>
+                        <p>
+                            You can share more stories in the comments. Have a great time.
+                        </p>
+                    </div>
+                    <div class="login-section">
+                        <h3>Welcome Back.</h3>
+                        <form class="login-form" method="POST" action="{{ url_for('login') }}">
+                            <div>
+                                <label for="username">Username:</label>
+                                <input type="text" id="username" name="username" required>
+                            </div>
+                            <div>
+                                <label for="password">Password:</label>
+                                <input type="password" id="password" name="password" required>
+                            </div>
+                            <!-- Add reCAPTCHA field -->
+                            <div class="form-group">
+                                <div class="g-recaptcha" data-sitekey="6LejiBsrAAAAAFWVcxyoG037vuUWdvJ_L-5rRXes"></div>
+                            </div>
+                            <div class="checkbox">
+                                <p style="display: inline;">Keep me logged in</p>
+                                <input class="remember_me" type="checkbox" id="remember_me" name="remember_me">
+                            </div>
+                            <button type="submit">Login</button>
+                        </form>
+                        <div class="login-links">
+                            <p> <a href="{{ url_for('register') }}"> Don't have an account ? </a> | <a href="{{ url_for('index') }}"> Home </a> |</p>
+                            <p><a href="{{ url_for('reset_password') }}"> Forgot your password ? </a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <hr class="container">
+        <footer class="container">
+            <div class="container">
+                <p style="text-align: left;">© 2025 InsipiraHub</p>
+                <p style="text-align: right;"><a href="#">Back to Top</a></p>
+            </div>
+        </footer>
+    </main>
+    <!-- reCAPTCHA Script -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <!-- Flash Disappear Script -->
+    <script src="{{ url_for('static', filename='static/JS/flash-disappear.js') }}"></script>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
