@@ -1,0 +1,12 @@
+<!-- filtered_users.html -->
+{% if users %}
+    <h2>Filtered Users</h2>
+    <ul>
+        {% for user in users %}
+            <li>Username: {{ user.username }}, Email: {{ user.email }}, First Name: {{ user.first_name }}, Last Name: {{ user.last_name }}</li>
+            <!-- Display other user data as needed -->
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No users found based on the provided criteria.</p>
+{% endif %}

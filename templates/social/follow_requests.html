@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Add your head content here -->
+</head>
+<body>
+    <h1>Follow Requests</h1>
+    <ul>
+        {% for request in follow_requests %}
+        <li>
+            <strong>{{ request.follower_username }}</strong> wants to follow you.
+            <form action="{{ url_for('accept_follow_request', request_id=request.request_id) }}" method="POST">
+                <input type="submit" value="Accept">
+            </form>
+            <form action="{{ url_for('reject_follow_request', request_id=request.request_id) }}" method="POST">
+                <input type="submit" value="Reject">
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

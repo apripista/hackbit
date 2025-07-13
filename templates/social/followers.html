@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ username.title() }}'s Followers - InsipiraHub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: linear-gradient(90deg, #2c3e50 0%, #477a49 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #a8dadc;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .followers-section h2 {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .followers-section h2::after {
+            content: '';
+            width: 80px;
+            height: 3px;
+            background: #477a49;
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .follower-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .follower-item {
+            background: white;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+
+        .follower-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .follower-item a {
+            color: #2c3e50;
+            text-decoration: none;
+            font-size: 1.1rem;
+        }
+
+        .follower-item a:hover {
+            color: #3498db;
+        }
+
+        .follow-btn, .unfollow-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .follow-btn {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .follow-btn:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+        }
+
+        .unfollow-btn {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .unfollow-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .no-followers {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #555;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+
+            .follower-item {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ username.title() }}'s Followers</h1>
+        <div class="nav-links">
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('view_posts') }}">View Posts</a>
+            <a href="{{ url_for('create_post') }}">Create Post</a>
+            <a href="{{ url_for('settings') }}">Settings</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="followers-section">
+            <h2>Followers of {{ username.title() }}</h2>
+            {% if follower_usernames %}
+                <ul class="follower-list">
+                    {% for follower in follower_usernames %}
+                        <li class="follower-item">
+                            <a href="{{ url_for('public_profile', user_id=follower.id) }}">@{{ follower.username }}</a>
+                            {% if session.get('user_id') != follower.id %}
+                                {% if current_user_follows_this_user %}
+                                    <a href="{{ url_for('unfollow_user', user_id=follower.id) }}" class="unfollow-btn">Unfollow</a>
+                                {% else %}
+                                    <a href="{{ url_for('follow_user', user_id=follower.id) }}" class="follow-btn">Follow</a>
+                                {% endif %}
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="no-followers">{{ username.title() }} has no followers yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
